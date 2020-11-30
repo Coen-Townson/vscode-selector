@@ -38,7 +38,7 @@ function select_option {
         local idx=0
         for opt; do
             cursor_to $(($startrow + $idx))
-            if [ "$opt" = "Cancel" ]
+            if [ "$opt" = "Cancel" -o "$opt" = "Create New Workspace" ]
             then
                 echo
             fi
@@ -68,7 +68,7 @@ function select_option {
     return $selected
 }
 
-# Read ssh config file and add host names to ss_options array
+# Read vscode workspace directory and add paths and names to list
 function get_workspace_config {
     # If $VSCODE_WORKSPACES_PATH is undefined default to using $HOME/vscode-workspaces
     if [ !$VSCODE_WORKSPACES_PATH ]
@@ -90,13 +90,36 @@ function get_workspace_config {
     fi
 }
 
+# Create a basic workspace file
+function create_workspace {
+    # If $VSCODE_WORKSPACES_PATH is undefined default to using $HOME/vscode-workspaces
+    if [ !$VSCODE_WORKSPACES_PATH ]
+    then
+        VSCODE_WORKSPACES_PATH="$HOME/vscode-workspaces"
+    fi
+
+    if ls "$VSCODE_WORKSPACES_PATH" >/dev/null 2>&1
+    then
+        echo -n "Workspace name: "
+        read name
+        echo -n "Workspace directory path: "
+        read path
+        # Expand ~/xxx to $HOME/xxx
+        path="${path/#~/$HOME}"
+        printf "{\n    \"folders\": [\n        {\n            \"path\": \"$path\"\n       }\n    ]\n}\n" > "$VSCODE_WORKSPACES_PATH/$name.code-workspace"
+    else
+        echo "Could not find workspaces directory. Please check that $VSCODE_WORKSPACES_PATH exists."
+        exit 1
+    fi
+}
+
 ###### Main ######
 
 # Read workspace files
 workspace_names=()
 workspace_paths=()
 get_workspace_config
-options=("${workspace_names[@]}" "Cancel")
+options=("${workspace_names[@]}" "Create New Workspace" "Cancel")
 
 # Get user input
 printf "Select workspace:\n\n\n"
@@ -107,6 +130,9 @@ choice=$?
 if [ "${options[$choice]}" = "Cancel" ]
 then
     exit 0
+elif [ "${options[$choice]}" = "Create New Workspace" ]
+then
+    create_workspace
 else
     code ${workspace_paths[$choice]}
 fi
