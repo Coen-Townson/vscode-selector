@@ -137,9 +137,7 @@ then
     exit 0
 elif [ "${options[$choice]}" = "Create New Workspace" ]
 then
-    echo "here"
     create_workspace
 else
-    echo "${options[$choice]}"
     code "${workspace_paths[$choice]}"
 fi
