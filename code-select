@@ -38,6 +38,10 @@ function select_option {
         local idx=0
         for opt; do
             cursor_to $(($startrow + $idx))
+            if [ "$opt" = "" ]
+            then
+                continue
+            fi
             if [ "$opt" = "Cancel" -o "$opt" = "Create New Workspace" ]
             then
                 echo
