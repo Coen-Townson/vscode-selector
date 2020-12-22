@@ -38,10 +38,6 @@ function select_option {
         local idx=0
         for opt; do
             cursor_to $(($startrow + $idx))
-            if [ "$opt" = "" ]
-            then
-                continue
-            fi
             if [ "$opt" = "Cancel" -o "$opt" = "Create New Workspace" ]
             then
                 echo
@@ -123,7 +119,12 @@ function create_workspace {
 workspace_names=()
 workspace_paths=()
 get_workspace_config
-options=("${workspace_names[@]}" "Create New Workspace" "Cancel")
+if [ "${workspace_names[@]}" = "" ]
+then
+    options=("Create New Workspace" "Cancel")
+else
+    options=("${workspace_names[@]}" "Create New Workspace" "Cancel")
+fi
 
 # Get user input
 printf "Select workspace:\n\n\n"
@@ -136,7 +137,9 @@ then
     exit 0
 elif [ "${options[$choice]}" = "Create New Workspace" ]
 then
+    echo "here"
     create_workspace
 else
-    code ${workspace_paths[$choice]}
+    echo "${options[$choice]}"
+    code "${workspace_paths[$choice]}"
 fi
