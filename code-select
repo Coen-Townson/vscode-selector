@@ -73,7 +73,7 @@ function get_workspace_config {
     # If $VSCODE_WORKSPACES_PATH is undefined default to using $HOME/vscode-workspaces
     if [ !$VSCODE_WORKSPACES_PATH ]
     then
-        VSCODE_WORKSPACES_PATH="$HOME/vscode-workspaces"
+        VSCODE_WORKSPACES_PATH="$HOME/vscode-workspaces/"
     fi
 
     if ls "$VSCODE_WORKSPACES_PATH" >/dev/null 2>&1
@@ -95,7 +95,7 @@ function create_workspace {
     # If $VSCODE_WORKSPACES_PATH is undefined default to using $HOME/vscode-workspaces
     if [ !$VSCODE_WORKSPACES_PATH ]
     then
-        VSCODE_WORKSPACES_PATH="$HOME/vscode-workspaces"
+        VSCODE_WORKSPACES_PATH="$HOME/vscode-workspaces/"
     fi
 
     if ls "$VSCODE_WORKSPACES_PATH" >/dev/null 2>&1
